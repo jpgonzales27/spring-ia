@@ -1,19 +1,11 @@
 spring:
   application:
     name: medassistant
-  ai:
-    google:
-      genai:
-        api-key: ${GOOGLE_AI_API_KEY}
-        chat:
-          options:
-            model: gemini-3.1-flash-lite
   datasource:
     url: jdbc:postgresql://localhost:5433/medassistant
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create-drop
