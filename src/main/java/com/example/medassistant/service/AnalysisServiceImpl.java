@@ -3,13 +3,18 @@ package com.example.medassistant.service;
 import com.example.medassistant.config.ClientResolver;
 import com.example.medassistant.dto.analysis.ConditionSummary;
 import com.example.medassistant.dto.analysis.SymptomAnalysis;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -17,6 +22,16 @@ import java.util.List;
 public class AnalysisServiceImpl implements AnalysisService{
 
     private final ClientResolver clientResolver;
+
+    @Value("classpath:prompts/structured-analysis.st")
+    private Resource structuredAnalysisResource;
+
+    private PromptTemplate structuredAnalysisTemplate;
+
+    @PostConstruct
+    void init(){
+        structuredAnalysisTemplate = new PromptTemplate(structuredAnalysisResource);
+    }
 
     @Override
     public ConditionSummary summarizeCondition(String condition, String model) {
@@ -74,6 +89,21 @@ public class AnalysisServiceImpl implements AnalysisService{
                 .prompt()
                 .user("Analiza los siguientes sintomas de un paciente y " +
                         "proporciona un analisis medico educativo completo: "+ symptoms)
+                .call()
+                .entity(SymptomAnalysis.class);
+    }
+
+    @Override
+    public SymptomAnalysis analyzeSymptoms2(String symptoms, String model) {
+        log.info("Análisis estructurado de síntomas — modelo: {}", model);
+
+        String message = structuredAnalysisTemplate.render(
+                Map.of("sintomas", symptoms)
+        );
+
+        return clientResolver.resolve(model)
+                .prompt()
+                .user(message)
                 .call()
                 .entity(SymptomAnalysis.class);
     }

@@ -40,4 +40,9 @@ public class AnalysisController {
     public ResponseEntity<SymptomAnalysis> analyzeSymptoms(@Valid @RequestBody ChatRequest request) {
         return ResponseEntity.ok(analysisService.analyzeSymptoms(request.prompt(), request.model()));
     }
+
+    @PostMapping("/symptoms2")
+    public ResponseEntity<SymptomAnalysis> analyzeSymptoms2(@Valid @RequestBody ChatRequest request) {
+        return ResponseEntity.ok(analysisService.analyzeSymptoms2(request.prompt(), request.model()));
+    }
 }
