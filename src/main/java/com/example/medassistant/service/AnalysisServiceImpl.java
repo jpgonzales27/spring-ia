@@ -7,7 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -49,5 +52,18 @@ public class AnalysisServiceImpl implements AnalysisService{
                 .user("Proporcioná un resumen médico educativo sobre: " + condition)
                 .call()
                 .entity(ConditionSummary.class);
+    }
+
+    @Override
+    public List<ConditionSummary> listRelatedConditions(String symptoms, String model) {
+        log.info("Listado de condiciones realacionadas - modelo: {} ", model);
+        return clientResolver.resolve(model)
+                .prompt()
+                .user("Listá las 3 condiciones médicas más probables " +
+                        "para estos síntomas: " + symptoms
+                )
+                .call()
+                .entity(new ParameterizedTypeReference<>() {
+                });
     }
 }

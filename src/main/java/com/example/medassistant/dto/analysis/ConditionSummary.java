@@ -12,8 +12,8 @@ public record ConditionSummary(
         @JsonPropertyDescription("Síntomas más frecuentes asociados a esta condición")
         String commonSymptoms,
 
-//        @JsonPropertyDescription("Nivel de gravedad general de la condición")
-//        Severity severity,
+        @JsonPropertyDescription("Nivel de gravedad general de la condición")
+        Severity severity,
 
         @JsonPropertyDescription("Indicaciones claras de cuándo buscar atención médica profesional")
         String whenToSeeDoctor
