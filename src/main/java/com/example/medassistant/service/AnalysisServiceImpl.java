@@ -2,11 +2,10 @@ package com.example.medassistant.service;
 
 import com.example.medassistant.config.ClientResolver;
 import com.example.medassistant.dto.analysis.ConditionSummary;
+import com.example.medassistant.dto.analysis.SymptomAnalysis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.converter.BeanOutputConverter;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
@@ -65,5 +64,17 @@ public class AnalysisServiceImpl implements AnalysisService{
                 .call()
                 .entity(new ParameterizedTypeReference<>() {
                 });
+    }
+
+    @Override
+    public SymptomAnalysis analyzeSymptoms(String symptoms, String model) {
+        log.info("Análisis estructurado de síntomas — modelo: {}", model);
+
+        return clientResolver.resolve(model)
+                .prompt()
+                .user("Analiza los siguientes sintomas de un paciente y " +
+                        "proporciona un analisis medico educativo completo: "+ symptoms)
+                .call()
+                .entity(SymptomAnalysis.class);
     }
 }
