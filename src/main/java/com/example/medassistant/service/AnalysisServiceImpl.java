@@ -45,6 +45,17 @@ public class AnalysisServiceImpl implements AnalysisService{
         return converter.convert(jsonResponse);
     }
 
+    @Override
+    public ConditionSummary summarizeCondition2(String condition, String model) {
+
+        log.info("Análisis estructurado de condición: {}, modelo: {}", condition, model);
+        return resolveClient(model)
+                .prompt()
+                .user("Proporcioná un resumen médico educativo sobre: " + condition)
+                .call()
+                .entity(ConditionSummary.class);
+    }
+
     private ChatClient resolveClient(String model){
         return "ollama".equalsIgnoreCase(model) ? ollamaClient : geminiClient;
     }

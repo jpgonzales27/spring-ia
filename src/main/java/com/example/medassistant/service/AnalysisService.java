@@ -4,4 +4,5 @@ import com.example.medassistant.dto.analysis.ConditionSummary;
 
 public interface AnalysisService {
     ConditionSummary summarizeCondition(String condition, String model);
+    ConditionSummary summarizeCondition2(String condition, String model);
 }

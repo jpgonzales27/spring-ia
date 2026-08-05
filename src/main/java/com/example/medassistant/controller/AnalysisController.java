@@ -24,4 +24,9 @@ public class AnalysisController {
     public ResponseEntity<ConditionSummary> analyzeCondition(@Valid @RequestBody ChatRequest request){
         return ResponseEntity.ok(analysisService.summarizeCondition(request.prompt(), request.model()));
     }
+
+    @PostMapping("/condition2")
+    public ResponseEntity<ConditionSummary> analyzeCondition2(@Valid @RequestBody ChatRequest request){
+        return ResponseEntity.ok(analysisService.summarizeCondition2(request.prompt(), request.model()));
+    }
 }
