@@ -2,6 +2,7 @@ package com.example.medassistant.controller;
 
 import com.example.medassistant.dto.ChatRequest;
 import com.example.medassistant.dto.analysis.ConditionSummary;
+import com.example.medassistant.dto.analysis.QueryClassification;
 import com.example.medassistant.dto.analysis.SymptomAnalysis;
 import com.example.medassistant.service.AnalysisService;
 import jakarta.validation.Valid;
@@ -44,5 +45,10 @@ public class AnalysisController {
     @PostMapping("/symptoms2")
     public ResponseEntity<SymptomAnalysis> analyzeSymptoms2(@Valid @RequestBody ChatRequest request) {
         return ResponseEntity.ok(analysisService.analyzeSymptoms2(request.prompt(), request.model()));
+    }
+
+    @PostMapping("/classify")
+    public ResponseEntity<QueryClassification> classifyQuery(@Valid @RequestBody ChatRequest request) {
+        return ResponseEntity.ok(analysisService.classifyQuery(request.prompt(), request.model()));
     }
 }
