@@ -1,6 +1,8 @@
 package com.example.medassistant.service;
 
+import com.example.medassistant.config.ClientResolver;
 import com.example.medassistant.dto.analysis.ConditionSummary;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.converter.BeanOutputConverter;
@@ -9,17 +11,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AnalysisServiceImpl implements AnalysisService{
 
-    private final ChatClient geminiClient;
-    private final ChatClient ollamaClient;
-
-    public AnalysisServiceImpl(
-            @Qualifier("geminiClient") ChatClient geminiClient,
-            @Qualifier("ollamaClient") ChatClient ollamaClient) {
-        this.geminiClient = geminiClient;
-        this.ollamaClient = ollamaClient;
-    }
+    private final ClientResolver clientResolver;
 
     @Override
     public ConditionSummary summarizeCondition(String condition, String model) {
@@ -36,7 +31,7 @@ public class AnalysisServiceImpl implements AnalysisService{
                 %s
                 """.formatted(condition, format);
 
-        String jsonResponse = resolveClient(model)
+        String jsonResponse = clientResolver.resolve(model)
                 .prompt(prompt)
                 .call()
                 .content();
@@ -49,14 +44,10 @@ public class AnalysisServiceImpl implements AnalysisService{
     public ConditionSummary summarizeCondition2(String condition, String model) {
 
         log.info("Análisis estructurado de condición: {}, modelo: {}", condition, model);
-        return resolveClient(model)
+        return clientResolver.resolve(model)
                 .prompt()
                 .user("Proporcioná un resumen médico educativo sobre: " + condition)
                 .call()
                 .entity(ConditionSummary.class);
-    }
-
-    private ChatClient resolveClient(String model){
-        return "ollama".equalsIgnoreCase(model) ? ollamaClient : geminiClient;
     }
 }
