@@ -53,7 +53,9 @@ public class AssistantServiceImpl implements AssistantService{
         log.info("Chat request - modelo: {} ", model);
 
         return clientResolver.resolve(model)
-                .prompt(prompt).call().content();
+                .prompt(prompt)
+                .call()
+                .content();
     }
 
     @Override
