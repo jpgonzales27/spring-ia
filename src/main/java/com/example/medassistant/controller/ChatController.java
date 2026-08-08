@@ -16,13 +16,17 @@ public class ChatController {
     private final AssistantService assistantService;
 
     @PostMapping
-    public ResponseEntity<String> chat(@RequestBody ChatRequest request) {
-        return ResponseEntity.ok(assistantService.chat(request.prompt(), request.model()));
+    public ResponseEntity<String> chat(
+            @RequestBody ChatRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+        return ResponseEntity.ok(assistantService.chat(request.prompt(), request.model(), userId));
     }
 
     @PostMapping(value = "/stream", produces = "text/event-stream; charset=UTF-8")
-    public Flux<String> chatStream(@RequestBody ChatRequest request) {
-        return assistantService.chatStream(request.prompt(), request.model());
+    public Flux<String> chatStream(
+            @RequestBody ChatRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long userId) {
+        return assistantService.chatStream(request.prompt(), request.model(), userId);
     }
 
     @PostMapping("/explain")
