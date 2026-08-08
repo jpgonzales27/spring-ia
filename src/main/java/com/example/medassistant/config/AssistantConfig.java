@@ -1,6 +1,7 @@
 package com.example.medassistant.config;
 
 import com.example.medassistant.tools.AppointmentSearchTool;
+import com.example.medassistant.tools.DoctorInfoTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.google.genai.GoogleGenAiChatModel;
@@ -22,6 +23,7 @@ public class AssistantConfig {
     private Resource systemPromptResource;
 
     private final AppointmentSearchTool appointmentSearchTool;
+    private final DoctorInfoTool doctorInfoTool;
 
     @Bean("geminiClient")
     ChatClient geminiClient(GoogleGenAiChatModel chatModel) throws IOException {
@@ -31,7 +33,7 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool)
+                .defaultTools(appointmentSearchTool, doctorInfoTool)
                 .build();
     }
 
@@ -43,7 +45,7 @@ public class AssistantConfig {
 
         return ChatClient.builder(chatModel)
                 .defaultSystem(systemPrompt)
-                .defaultTools(appointmentSearchTool)
+                .defaultTools(appointmentSearchTool, doctorInfoTool)
                 .build();
     }
 }
