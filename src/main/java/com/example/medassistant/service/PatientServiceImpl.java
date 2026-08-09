@@ -15,6 +15,7 @@ public class PatientServiceImpl implements PatientService{
 
     private final PatientRepository patientRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public PatientInfo getPatientInfo(Long patientId) {
 

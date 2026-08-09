@@ -15,6 +15,7 @@ public class DoctorServiceImpl implements DoctorService{
 
     private final DoctorRepository doctorRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public List<DoctorInfo> searchDoctors(String query) {
         return doctorRepository

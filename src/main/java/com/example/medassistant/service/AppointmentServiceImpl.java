@@ -60,8 +60,37 @@ public class AppointmentServiceImpl implements AppointmentService {
         return toAppointmentInfoList(appointments, doctorNames, specialty);
     }
 
+    @Transactional
     @Override
     public String bookAppointment(String specialty, LocalDate date, LocalTime time, Long patientId) {
-        return "";
+
+        log.info("Reservando turno: specialty={}, date={}, time={}, patientId={}",
+                specialty, date, time, patientId);
+
+        var doctors = doctorRepository.findBySpecialtyIgnoreCase(specialty);
+        if(doctors.isEmpty()){
+            return "No se encontró la especialidad: " + specialty;
+        }
+
+        var doctorIds = doctors.stream().map(Doctor::getId).toList();
+        var appointment = findAvailableAppointment(doctorIds, date, time);
+        if(appointment==null){
+            return "El turno no está disponible.";
+        }
+
+        appointment.setAvailable(false);
+        appointment.setPatientId(patientId);
+
+        appointmentRepository.save(appointment);
+
+        return "Turno reservado exitosamente.";
+    }
+
+    @Transactional(readOnly = true)
+    private Appointment findAvailableAppointment(List<Long> doctorIds, LocalDate date, LocalTime time){
+        return appointmentRepository.findByDoctorIdInAndDateAndStartTimeAndAvailableTrue(doctorIds,date,time)
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 }
